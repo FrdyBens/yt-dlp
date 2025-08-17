@@ -30,14 +30,24 @@
       <input id="flagSearch" type="text" placeholder="🔍 Search flags..." class="w-full p-2 mb-4 rounded-md bg-gray-800 border border-gray-700">
       <div id="components" class="space-y-3">
         <div class="category" data-cat="Formats">
-          <h3 class="text-sm font-bold text-gray-400">Formats</h3>
-          <div draggable="true" data-arg="-f bestaudio" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700">🎧 Best Audio</div>
-          <div draggable="true" data-arg="--merge-output-format mp4" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700">📦 Merge MP4</div>
+          <h3 class="text-sm font-bold text-gray-400 cursor-pointer flex justify-between items-center">
+            <span>Formats</span>
+            <span class="category-toggle text-cyan-400">▾</span>
+          </h3>
+          <div class="category-content space-y-3 mt-2">
+            <div draggable="true" data-arg="-f bestaudio" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700" title="Select the best quality audio-only stream.">🎧 Best Audio</div>
+            <div draggable="true" data-arg="--merge-output-format mp4" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700" title="If a merge is required (e.g., for separate video and audio streams), output to an MP4 container.">📦 Merge MP4</div>
+          </div>
         </div>
         <div class="category" data-cat="Metadata">
-          <h3 class="text-sm font-bold text-gray-400">Metadata</h3>
-          <div draggable="true" data-arg="--write-info-json" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700">📝 Save JSON</div>
-          <div draggable="true" data-arg="--embed-thumbnail" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700">📌 Embed Thumbnail</div>
+          <h3 class="text-sm font-bold text-gray-400 cursor-pointer flex justify-between items-center">
+            <span>Metadata</span>
+            <span class="category-toggle text-cyan-400">▾</span>
+          </h3>
+          <div class="category-content space-y-3 mt-2">
+            <div draggable="true" data-arg="--write-info-json" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700" title="Write video metadata to a .info.json file.">📝 Save JSON</div>
+            <div draggable="true" data-arg="--embed-thumbnail" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700" title="Embed thumbnail in the audio file as cover art.">📌 Embed Thumbnail</div>
+          </div>
         </div>
       </div>
 
@@ -65,6 +75,7 @@
       <button id="runPreview" class="mt-2 bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-xl shadow">▶ Fake Run</button>
       <pre id="executionLog" class="mt-2 p-2 bg-black text-green-400 text-xs h-32 overflow-y-auto hidden"></pre>
       <button id="saveProfile" class="mt-3 bg-purple-600 hover:bg-purple-500 text-white py-2 px-4 rounded-xl shadow">💾 Save Profile</button>
+      <button id="saveFavoriteBtn" class="mt-2 bg-yellow-600 hover:bg-yellow-500 text-white py-2 px-4 rounded-xl shadow">⭐ Save as Favorite</button>
       <button id="exportProfiles" class="mt-2 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-xl shadow">📤 Export Profiles</button>
       <input type="file" id="importProfiles" class="hidden">
       <button id="btnImportProfiles" class="mt-2 bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded-xl shadow">📥 Import Profiles</button>
@@ -89,6 +100,7 @@
     const btnThemeLight = document.getElementById("btnThemeLight");
     const btnThemeDark = document.getElementById("btnThemeDark");
     const btnThemeSolar = document.getElementById("btnThemeSolar");
+    const saveFavoriteBtn = document.getElementById("saveFavoriteBtn");
     let args = [];
     let profiles = JSON.parse(localStorage.getItem("ytProfiles") || "[]");
     let favorites = JSON.parse(localStorage.getItem("ytFavorites") || "[]");
@@ -127,10 +139,15 @@
     }
 
     function renderArgs() {
+      if (args.length === 0) {
+        dropzone.innerHTML = '<div class="text-gray-400">Drag options here ⬇️</div>';
+        return;
+      }
       dropzone.innerHTML = args.map((a, i) => `
-        <div draggable='true' ondragstart='dragStart(${i})' ondragover='dragOver(event, ${i})' ondrop='dropHere(${i})' class='flex items-center gap-2 bg-cyan-800 text-white px-2 py-1 rounded-md text-xs'>
-          <input type='text' value='${escapeHTML(a)}' onchange='editArg(${i}, this.value)' class='bg-transparent flex-1 focus:outline-none'>
-          <button onclick='removeArg(${i})' class='text-red-400 hover:text-red-600'>❌</button>
+        <div ondragover='dragOver(event, ${i})' ondrop='dropHere(${i})' class='flex items-center gap-2 bg-cyan-800 text-white px-3 py-2 rounded-lg text-sm'>
+          <span draggable='true' ondragstart='dragStart(${i})' class='cursor-grab active:cursor-grabbing pr-2 text-gray-400' title="Drag to reorder">⣿</span>
+          <input type='text' value='${escapeHTML(a)}' onchange='editArg(${i}, this.value)' class='bg-transparent flex-1 focus:outline-none w-full'>
+          <button onclick='removeArg(${i})' class='text-red-400 hover:text-red-600 pl-2'>❌</button>
         </div>`).join("");
     }
 
@@ -184,13 +201,41 @@
       }, 800);
     });
 
+    saveFavoriteBtn.addEventListener("click", () => {
+      const name = prompt("Enter a name for this favorite:");
+      if (!name || !name.trim()) return;
+      favorites.push({ name: name.trim(), args: [...args] });
+      renderFavorites();
+    });
+
     function renderFavorites() {
       const list = document.getElementById("favoritesList");
-      list.innerHTML = favorites.map((f,i) => `<li><span>[${f.tag}] ${f.name}</span> <button onclick='loadFavorite(${i})' class='text-cyan-400'>▶</button></li>`).join("");
+      list.innerHTML = favorites.map((f, i) => `
+        <li class="flex items-center justify-between text-xs py-1">
+          <span class="truncate pr-2">${escapeHTML(f.name)}</span>
+          <div class="flex items-center">
+            <button onclick="loadFavorite(${i})" title="Load '${escapeHTML(f.name)}'" class="text-cyan-400 hover:text-cyan-200 px-2 py-1 rounded">▶</button>
+            <button onclick="deleteFavorite(${i})" title="Delete '${escapeHTML(f.name)}'" class="text-red-500 hover:text-red-400 px-2 py-1 rounded">🗑️</button>
+          </div>
+        </li>`).join("");
       localStorage.setItem("ytFavorites", JSON.stringify(favorites));
     }
 
-    window.loadFavorite = i => { args = favorites[i].args || []; renderArgs(); updateCommand(); };
+    window.loadFavorite = i => {
+      if (favorites[i] && favorites[i].args) {
+        args = [...favorites[i].args];
+        renderArgs();
+        updateCommand();
+      }
+    };
+
+    window.deleteFavorite = i => {
+      if (!favorites[i]) return;
+      if (confirm(`Are you sure you want to delete the favorite "${favorites[i].name}"?`)) {
+        favorites.splice(i, 1);
+        renderFavorites();
+      }
+    };
 
     function renderProfiles() {
       const list = document.getElementById("profilesList");
@@ -252,6 +297,17 @@
       const term = e.target.value.toLowerCase();
       document.querySelectorAll("#components .draggable").forEach(el => {
         el.style.display = el.innerText.toLowerCase().includes(term) ? "block" : "none";
+      });
+    });
+
+    document.querySelectorAll('.category h3').forEach(header => {
+      header.addEventListener('click', () => {
+        const content = header.nextElementSibling;
+        const toggle = header.querySelector('.category-toggle');
+        content.classList.toggle('hidden');
+        if (toggle) {
+          toggle.textContent = content.classList.contains('hidden') ? '▸' : '▾';
+        }
       });
     });
 
