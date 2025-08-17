@@ -8,83 +8,133 @@
   <style>
     .draggable { cursor: grab; }
     .draggable:active { cursor: grabbing; }
-    .theme-light { --bg: #f9f9f9; --fg: #111; }
-    .theme-dark { --bg: #0f0f1e; --fg: #eee; }
-    .theme-solarized { --bg: #002b36; --fg: #839496; }
-    body { background: var(--bg); color: var(--fg); transition: all 0.5s ease; }
+
+    :root, .theme-dark {
+      --bg-primary: #0f0f1e; --bg-secondary: #1a1a36; --bg-tertiary: #2a2a4f; --bg-hover: #3a3a6f;
+      --text-primary: #eee; --text-secondary: #aaa; --text-accent: #0af; --text-green: #4caf50; --text-red: #f44336;
+      --border-color: #0af; --border-secondary: #4a4a7f;
+      --button-primary-bg: #0af; --button-secondary-bg: #808; --button-danger-bg: #f44336; --button-special-bg: #b8860b;
+      --preset-1-bg: #5a00a0; --preset-2-bg: #006400; --preset-3-bg: #b8860b;
+    }
+    .theme-light {
+      --bg-primary: #f4f4f5; --bg-secondary: #ffffff; --bg-tertiary: #e4e4e7; --bg-hover: #d4d4d8;
+      --text-primary: #18181b; --text-secondary: #71717a; --text-accent: #007bff; --text-green: #28a745; --text-red: #dc3545;
+      --border-color: #007bff; --border-secondary: #a1a1aa;
+      --button-primary-bg: #007bff; --button-secondary-bg: #6c757d; --button-danger-bg: #dc3545; --button-special-bg: #b8860b;
+      --preset-1-bg: #9333ea; --preset-2-bg: #16a34a; --preset-3-bg: #f59e0b;
+    }
+    .theme-solarized {
+      --bg-primary: #002b36; --bg-secondary: #073642; --bg-tertiary: #586e75; --bg-hover: #657b83;
+      --text-primary: #839496; --text-secondary: #657b83; --text-accent: #268bd2; --text-green: #859900; --text-red: #dc322f;
+      --border-color: #268bd2; --border-secondary: #586e75;
+      --button-primary-bg: #268bd2; --button-secondary-bg: #6c71c4; --button-danger-bg: #dc322f; --button-special-bg: #b58900;
+      --preset-1-bg: #6c71c4; --preset-2-bg: #859900; --preset-3-bg: #b58900;
+    }
+    .theme-cyberpunk {
+      --bg-primary: #0d0221; --bg-secondary: #240046; --bg-tertiary: #10002b; --bg-hover: #3c096c;
+      --text-primary: #f0f; --text-secondary: #0ff; --text-accent: #0f0; --text-green: #50fa7b; --text-red: #ff5555;
+      --border-color: #f0f; --border-secondary: #3c096c;
+      --button-primary-bg: #0ff; --button-secondary-bg: #f0f; --button-danger-bg: #ff5555; --button-special-bg: #fefk01;
+      --preset-1-bg: #f0f; --preset-2-bg: #0f0; --preset-3-bg: #fefk01;
+    }
+     .theme-minimal {
+      --bg-primary: #ffffff; --bg-secondary: #f8f9fa; --bg-tertiary: #e9ecef; --bg-hover: #dee2e6;
+      --text-primary: #212529; --text-secondary: #6c757d; --text-accent: #0056b3; --text-green: #218838; --text-red: #c82333;
+      --border-color: #0056b3; --border-secondary: #ced4da;
+      --button-primary-bg: #0056b3; --button-secondary-bg: #5a6268; --button-danger-bg: #c82333; --button-special-bg: #e0a800;
+      --preset-1-bg: #0056b3; --preset-2-bg: #5a6268; --preset-3-bg: #e0a800;
+    }
+
+    .arg-invalid { border: 1px solid var(--text-red) !important; box-shadow: 0 0 4px var(--text-red); }
+    body { background-color: var(--bg-primary); color: var(--text-primary); transition: all 0.3s ease; }
+    .bg-primary { background-color: var(--bg-primary); } .bg-secondary { background-color: var(--bg-secondary); }
+    .bg-tertiary { background-color: var(--bg-tertiary); } .hover\:bg-hover:hover { background-color: var(--bg-hover); }
+    .text-primary { color: var(--text-primary); } .text-secondary { color: var(--text-secondary); }
+    .text-accent { color: var(--text-accent); } .text-green { color: var(--text-green); } .text-red { color: var(--text-red); }
+    .border-color { border-color: var(--border-color); } .border-secondary { border-color: var(--border-secondary); }
+    .btn-primary { background-color: var(--button-primary-bg); } .btn-secondary { background-color: var(--button-secondary-bg); }
+    .btn-danger { background-color: var(--button-danger-bg); } .btn-special { background-color: var(--button-special-bg); }
+    .preset-1 { background-color: var(--preset-1-bg); } .preset-2 { background-color: var(--preset-2-bg); }
+    .preset-3 { background-color: var(--preset-3-bg); }
+    .btn-primary:hover, .btn-secondary:hover, .btn-danger:hover, .btn-special:hover { filter: brightness(1.2); }
   </style>
 </head>
 <body class="theme-dark min-h-screen flex flex-col">
-  <header class="p-4 bg-gray-900 shadow-md flex justify-between items-center">
-    <h1 class="text-2xl font-bold text-cyan-400">🎬 yt-dlp Command Builder Ultra</h1>
-    <div class="flex gap-2">
-      <button id="btnThemeLight" class="px-3 py-1 rounded bg-gray-700">🌞 Light</button>
-      <button id="btnThemeDark" class="px-3 py-1 rounded bg-gray-700">🌌 Dark</button>
-      <button id="btnThemeSolar" class="px-3 py-1 rounded bg-gray-700">🌅 Solarized</button>
+  <header class="p-4 bg-secondary shadow-md flex justify-between items-center">
+    <h1 class="text-2xl font-bold text-accent">🎬 yt-dlp Command Builder Ultra</h1>
+    <div class="flex gap-2 flex-wrap">
+      <button id="btnThemeLight" class="px-3 py-1 rounded bg-tertiary hover:bg-hover text-primary text-xs">🌞 Light</button>
+      <button id="btnThemeDark" class="px-3 py-1 rounded bg-tertiary hover:bg-hover text-primary text-xs">🌌 Dark</button>
+      <button id="btnThemeSolar" class="px-3 py-1 rounded bg-tertiary hover:bg-hover text-primary text-xs">🌅 Solarized</button>
+      <button id="btnThemeCyber" class="px-3 py-1 rounded bg-tertiary hover:bg-hover text-primary text-xs">🤖 Cyber</button>
+      <button id="btnThemeMinimal" class="px-3 py-1 rounded bg-tertiary hover:bg-hover text-primary text-xs">✨ Minimal</button>
     </div>
   </header>
 
   <main class="flex-1 grid grid-cols-12 gap-4 p-6">
-    <aside class="col-span-3 bg-gray-900 p-4 rounded-2xl shadow-lg">
+    <aside class="col-span-3 bg-secondary p-4 rounded-2xl shadow-lg">
       <h2 class="text-lg font-semibold mb-4">⚡ Components</h2>
-      <input id="flagSearch" type="text" placeholder="🔍 Search flags..." class="w-full p-2 mb-4 rounded-md bg-gray-800 border border-gray-700">
+      <input id="flagSearch" type="text" placeholder="🔍 Search flags..." class="w-full p-2 mb-4 rounded-md bg-tertiary border border-secondary text-primary">
       <div id="components" class="space-y-3">
         <div class="category" data-cat="Formats">
-          <h3 class="text-sm font-bold text-gray-400 cursor-pointer flex justify-between items-center">
+          <h3 class="text-sm font-bold text-secondary cursor-pointer flex justify-between items-center">
             <span>Formats</span>
-            <span class="category-toggle text-cyan-400">▾</span>
+            <span class="category-toggle text-accent">▾</span>
           </h3>
           <div class="category-content space-y-3 mt-2">
-            <div draggable="true" data-arg="-f bestaudio" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700" title="Select the best quality audio-only stream.">🎧 Best Audio</div>
-            <div draggable="true" data-arg="--merge-output-format mp4" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700" title="If a merge is required (e.g., for separate video and audio streams), output to an MP4 container.">📦 Merge MP4</div>
+            <div draggable="true" data-arg="-f bestaudio" class="draggable bg-tertiary hover:bg-hover p-3 rounded-xl" title="Select the best quality audio-only stream.">🎧 Best Audio</div>
+            <div draggable="true" data-arg="--merge-output-format mp4" class="draggable bg-tertiary hover:bg-hover p-3 rounded-xl" title="If a merge is required (e.g., for separate video and audio streams), output to an MP4 container.">📦 Merge MP4</div>
           </div>
         </div>
         <div class="category" data-cat="Metadata">
-          <h3 class="text-sm font-bold text-gray-400 cursor-pointer flex justify-between items-center">
+          <h3 class="text-sm font-bold text-secondary cursor-pointer flex justify-between items-center">
             <span>Metadata</span>
-            <span class="category-toggle text-cyan-400">▾</span>
+            <span class="category-toggle text-accent">▾</span>
           </h3>
           <div class="category-content space-y-3 mt-2">
-            <div draggable="true" data-arg="--write-info-json" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700" title="Write video metadata to a .info.json file.">📝 Save JSON</div>
-            <div draggable="true" data-arg="--embed-thumbnail" class="draggable bg-gray-800 p-3 rounded-xl hover:bg-gray-700" title="Embed thumbnail in the audio file as cover art.">📌 Embed Thumbnail</div>
+            <div draggable="true" data-arg="--write-info-json" class="draggable bg-tertiary hover:bg-hover p-3 rounded-xl" title="Write video metadata to a .info.json file.">📝 Save JSON</div>
+            <div draggable="true" data-arg="--embed-thumbnail" class="draggable bg-tertiary hover:bg-hover p-3 rounded-xl" title="Embed thumbnail in the audio file as cover art.">📌 Embed Thumbnail</div>
           </div>
         </div>
       </div>
 
       <h2 class="text-lg font-semibold mt-6 mb-4">🎶 Smart Presets</h2>
       <div id="presets" class="space-y-3">
-        <div draggable="true" data-args="--bestaudio --extract-audio --audio-format mp3 --embed-thumbnail" class="draggable bg-purple-700 p-3 rounded-xl">🎧 Music Mode</div>
-        <div draggable="true" data-args="--write-info-json --embed-metadata --keep-video --cookies" class="draggable bg-green-700 p-3 rounded-xl">📦 Archive Mode</div>
-        <div draggable="true" data-args="--merge-output-format mp4 --no-warnings --remux-video mp4" class="draggable bg-yellow-700 p-3 rounded-xl">⚡ Fast Grab</div>
+        <div draggable="true" data-args="--bestaudio --extract-audio --audio-format mp3 --embed-thumbnail" class="draggable preset-1 p-3 rounded-xl text-white">🎧 Music Mode</div>
+        <div draggable="true" data-args="--write-info-json --embed-metadata --keep-video --cookies" class="draggable preset-2 p-3 rounded-xl text-white">📦 Archive Mode</div>
+        <div draggable="true" data-args="--merge-output-format mp4 --no-warnings --remux-video mp4" class="draggable preset-3 p-3 rounded-xl text-white">⚡ Fast Grab</div>
       </div>
     </aside>
 
-    <section class="col-span-6 bg-gray-900 p-6 rounded-2xl shadow-xl flex flex-col">
+    <section class="col-span-6 bg-secondary p-6 rounded-2xl shadow-xl flex flex-col">
       <h2 class="text-lg font-semibold mb-4">🛠️ Build Command</h2>
-      <textarea id="multiUrlInput" rows="4" placeholder="Paste multiple URLs here (one per line)..." class="w-full mb-4 p-2 rounded-md bg-gray-800 border border-gray-700"></textarea>
-      <input id="urlInput" type="text" placeholder="Or single URL here..." class="w-full mb-4 p-2 rounded-md bg-gray-800 border border-gray-700">
-      <div id="dropzone" class="flex-1 p-4 rounded-xl border-2 border-dashed border-cyan-500 bg-gray-800 text-gray-400 flex flex-col gap-2 overflow-y-auto">
+      <textarea id="multiUrlInput" rows="4" placeholder="Paste multiple URLs here (one per line)..." class="w-full mb-4 p-2 rounded-md bg-tertiary border border-secondary text-primary"></textarea>
+      <input id="urlInput" type="text" placeholder="Or single URL here..." class="w-full mb-4 p-2 rounded-md bg-tertiary border border-secondary text-primary">
+      <div id="dropzone" class="flex-1 p-4 rounded-xl border-2 border-dashed border-color bg-tertiary text-secondary flex flex-col gap-2 overflow-y-auto">
         Drag options here ⬇️
       </div>
     </section>
 
-    <aside class="col-span-3 bg-gray-900 p-4 rounded-2xl shadow-lg flex flex-col">
+    <aside class="col-span-3 bg-secondary p-4 rounded-2xl shadow-lg flex flex-col">
       <h2 class="text-lg font-semibold mb-2">🚀 Command</h2>
-      <textarea id="commandOutput" rows="6" class="w-full bg-gray-800 p-2 rounded-md text-green-400 font-mono text-sm"></textarea>
-      <button id="copyBtn" class="mt-3 bg-cyan-600 hover:bg-cyan-500 text-white py-2 px-4 rounded-xl shadow">📋 Copy</button>
-      <button id="runPreview" class="mt-2 bg-red-600 hover:bg-red-500 text-white py-2 px-4 rounded-xl shadow">▶ Fake Run</button>
-      <pre id="executionLog" class="mt-2 p-2 bg-black text-green-400 text-xs h-32 overflow-y-auto hidden"></pre>
-      <button id="saveProfile" class="mt-3 bg-purple-600 hover:bg-purple-500 text-white py-2 px-4 rounded-xl shadow">💾 Save Profile</button>
-      <button id="saveFavoriteBtn" class="mt-2 bg-yellow-600 hover:bg-yellow-500 text-white py-2 px-4 rounded-xl shadow">⭐ Save as Favorite</button>
-      <button id="exportProfiles" class="mt-2 bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-xl shadow">📤 Export Profiles</button>
+      <textarea id="commandOutput" rows="6" class="w-full bg-tertiary p-2 rounded-md text-green font-mono text-sm"></textarea>
+      <div class="grid grid-cols-2 gap-2 mt-3">
+        <button id="copyBtn" class="btn-primary text-white py-2 px-4 rounded-xl shadow w-full">📋 Copy</button>
+        <button id="exportScriptBtn" class="preset-2 text-white py-2 px-4 rounded-xl shadow w-full">📜 Export Script</button>
+      </div>
+      <button id="runPreview" class="mt-2 btn-danger text-white py-2 px-4 rounded-xl shadow w-full">▶ Fake Run</button>
+      <pre id="executionLog" class="mt-2 p-2 bg-primary text-green text-xs h-32 overflow-y-auto hidden"></pre>
+      <button id="saveProfile" class="mt-3 btn-secondary text-white py-2 px-4 rounded-xl shadow">💾 Save Profile</button>
+      <button id="saveFavoriteBtn" class="mt-2 btn-special text-white py-2 px-4 rounded-xl shadow">⭐ Save as Favorite</button>
+      <button id="exportProfiles" class="mt-2 btn-primary text-white py-2 px-4 rounded-xl shadow">📤 Export Profiles</button>
       <input type="file" id="importProfiles" class="hidden">
-      <button id="btnImportProfiles" class="mt-2 bg-blue-800 hover:bg-blue-700 text-white py-2 px-4 rounded-xl shadow">📥 Import Profiles</button>
+      <button id="btnImportProfiles" class="mt-2 btn-primary text-white py-2 px-4 rounded-xl shadow">📥 Import Profiles</button>
       <div class="mt-4">
-        <h3 class="text-sm text-gray-400 mb-1">⭐ Favorites</h3>
+        <h3 class="text-sm text-secondary mb-1">⭐ Favorites</h3>
         <ul id="favoritesList" class="text-xs space-y-1"></ul>
       </div>
       <div class="mt-4">
-        <h3 class="text-sm text-gray-400 mb-1">Saved Profiles</h3>
+        <h3 class="text-sm text-secondary mb-1">Saved Profiles</h3>
         <ul id="profilesList" class="text-xs space-y-1"></ul>
       </div>
     </aside>
@@ -100,12 +150,56 @@
     const btnThemeLight = document.getElementById("btnThemeLight");
     const btnThemeDark = document.getElementById("btnThemeDark");
     const btnThemeSolar = document.getElementById("btnThemeSolar");
+    const btnThemeCyber = document.getElementById("btnThemeCyber");
+    const btnThemeMinimal = document.getElementById("btnThemeMinimal");
     const saveFavoriteBtn = document.getElementById("saveFavoriteBtn");
     let args = [];
     let profiles = JSON.parse(localStorage.getItem("ytProfiles") || "[]");
     let favorites = JSON.parse(localStorage.getItem("ytFavorites") || "[]");
+    let invalidArgs = [];
     const baseClasses = document.body.className.split(" ").filter(c => !c.startsWith("theme-"));
     let currentTheme = Array.from(document.body.classList).find(c => c.startsWith("theme-")) || "theme-dark";
+
+    const uniqueFlags = { '--merge-output-format': [], '-f': ['--format'], '--format': ['-f'] };
+
+    function validateArgs(currentArgs) {
+      const invalidIndices = new Set();
+      const flagCounts = {};
+      const argFlags = currentArgs.map(arg => arg.split(" ")[0]);
+
+      argFlags.forEach(flag => {
+        let canonicalFlag = flag;
+        for (const [key, aliases] of Object.entries(uniqueFlags)) {
+          if (key === flag || aliases.includes(flag)) {
+            canonicalFlag = key;
+            break;
+          }
+        }
+        if (uniqueFlags.hasOwnProperty(canonicalFlag)) {
+          flagCounts[canonicalFlag] = (flagCounts[canonicalFlag] || 0) + 1;
+        }
+      });
+
+      argFlags.forEach((flag, index) => {
+        let canonicalFlag = flag;
+        for (const [key, aliases] of Object.entries(uniqueFlags)) {
+          if (key === flag || aliases.includes(flag)) {
+            canonicalFlag = key;
+            break;
+          }
+        }
+        if (flagCounts[canonicalFlag] > 1) {
+          invalidIndices.add(index);
+        }
+      });
+      return Array.from(invalidIndices);
+    }
+
+    function updateAll() {
+      invalidArgs = validateArgs(args);
+      renderArgs();
+      updateCommand();
+    }
 
     function initDraggables() {
       document.querySelectorAll("#components .draggable, #presets .draggable").forEach(el => {
@@ -124,15 +218,9 @@
       e.preventDefault();
       const data = e.dataTransfer.getData("text/plain");
       if (!data) return;
-      data.split(" ").filter(Boolean).forEach(a => addArg(a));
+      args.push(...data.split(" ").filter(Boolean));
+      updateAll();
     });
-
-    function addArg(arg) {
-      if (!arg) return;
-      args.push(arg);
-      renderArgs();
-      updateCommand();
-    }
 
     function escapeHTML(s) {
       return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
@@ -143,12 +231,17 @@
         dropzone.innerHTML = '<div class="text-gray-400">Drag options here ⬇️</div>';
         return;
       }
-      dropzone.innerHTML = args.map((a, i) => `
-        <div ondragover='dragOver(event, ${i})' ondrop='dropHere(${i})' class='flex items-center gap-2 bg-cyan-800 text-white px-3 py-2 rounded-lg text-sm'>
+      dropzone.innerHTML = args.map((a, i) => {
+        const isInvalid = invalidArgs.includes(i);
+        const invalidClass = isInvalid ? 'arg-invalid' : '';
+        const invalidTitle = isInvalid ? 'Error: This flag conflicts with another instance of the same flag.' : '';
+        return `
+        <div ondragover='dragOver(event, ${i})' ondrop='dropHere(${i})' class='flex items-center gap-2 bg-cyan-800 text-white px-3 py-2 rounded-lg text-sm ${invalidClass}' title="${invalidTitle}">
           <span draggable='true' ondragstart='dragStart(${i})' class='cursor-grab active:cursor-grabbing pr-2 text-gray-400' title="Drag to reorder">⣿</span>
           <input type='text' value='${escapeHTML(a)}' onchange='editArg(${i}, this.value)' class='bg-transparent flex-1 focus:outline-none w-full'>
           <button onclick='removeArg(${i})' class='text-red-400 hover:text-red-600 pl-2'>❌</button>
-        </div>`).join("");
+        </div>`;
+      }).join("");
     }
 
     window.dragStart = i => draggedIndex = i;
@@ -158,12 +251,11 @@
       const dragged = args.splice(draggedIndex, 1)[0];
       args.splice(i, 0, dragged);
       draggedIndex = null;
-      renderArgs();
-      updateCommand();
+      updateAll();
     };
 
-    window.removeArg = i => { args.splice(i, 1); renderArgs(); updateCommand(); };
-    window.editArg = (i, val) => { args[i] = val; updateCommand(); };
+    window.removeArg = i => { args.splice(i, 1); updateAll(); };
+    window.editArg = (i, val) => { args[i] = val; updateAll(); };
 
     function updateCommand() {
       const urls = multiUrlInput.value.split("\n").map(s => s.trim()).filter(Boolean);
@@ -182,6 +274,31 @@
       } else {
         const ta = output; ta.select(); document.execCommand("copy");
       }
+    });
+
+    document.getElementById("exportScriptBtn").addEventListener("click", () => {
+      const command = output.value;
+      if (!command || command.endsWith("<URL_HERE>")) {
+        alert("Cannot export a command without a URL.");
+        return;
+      }
+
+      const isWindows = navigator.platform.toUpperCase().indexOf('WIN') !== -1;
+      const scriptContent = isWindows
+        ? `@echo off\n${command}`
+        : `#!/bin/bash\n\n${command}`;
+      const fileExtension = isWindows ? 'bat' : 'sh';
+      const mimeType = isWindows ? 'application/bat' : 'application/x-sh';
+
+      const blob = new Blob([scriptContent], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `run_yt_dlp.${fileExtension}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     });
 
     document.getElementById("runPreview").addEventListener("click", () => {
@@ -204,28 +321,41 @@
     saveFavoriteBtn.addEventListener("click", () => {
       const name = prompt("Enter a name for this favorite:");
       if (!name || !name.trim()) return;
-      favorites.push({ name: name.trim(), args: [...args] });
+      const tagsStr = prompt("Enter comma-separated tags (optional):");
+      const tags = tagsStr ? tagsStr.split(',').map(t => t.trim()).filter(Boolean) : [];
+      favorites.push({ name: name.trim(), args: [...args], tags });
       renderFavorites();
     });
 
     function renderFavorites() {
       const list = document.getElementById("favoritesList");
-      list.innerHTML = favorites.map((f, i) => `
+      favorites.sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0));
+      list.innerHTML = favorites.map((f, i) => {
+        const tagsHTML = (f.tags || []).map(tag =>
+          `<span class="bg-tertiary text-accent text-xs font-semibold mr-1 px-1.5 py-0.5 rounded-full">${escapeHTML(tag)}</span>`
+        ).join(' ');
+        const pinClass = f.pinned ? 'text-accent' : 'text-secondary';
+
+        return `
         <li class="flex items-center justify-between text-xs py-1">
-          <span class="truncate pr-2">${escapeHTML(f.name)}</span>
-          <div class="flex items-center">
-            <button onclick="loadFavorite(${i})" title="Load '${escapeHTML(f.name)}'" class="text-cyan-400 hover:text-cyan-200 px-2 py-1 rounded">▶</button>
-            <button onclick="deleteFavorite(${i})" title="Delete '${escapeHTML(f.name)}'" class="text-red-500 hover:text-red-400 px-2 py-1 rounded">🗑️</button>
+          <div class="flex-grow truncate pr-2">
+            <div class="font-bold text-primary">${escapeHTML(f.name)}</div>
+            <div class="mt-1">${tagsHTML}</div>
           </div>
-        </li>`).join("");
+          <div class="flex items-center">
+            <button onclick="togglePin(${i})" title="Pin Favorite" class="${pinClass} hover:text-primary px-2 py-1 rounded">📌</button>
+            <button onclick="loadFavorite(${i})" title="Load '${escapeHTML(f.name)}'" class="text-accent hover:text-primary px-2 py-1 rounded">▶</button>
+            <button onclick="deleteFavorite(${i})" title="Delete '${escapeHTML(f.name)}'" class="text-red hover:text-primary px-2 py-1 rounded">🗑️</button>
+          </div>
+        </li>`;
+      }).join("");
       localStorage.setItem("ytFavorites", JSON.stringify(favorites));
     }
 
     window.loadFavorite = i => {
       if (favorites[i] && favorites[i].args) {
         args = [...favorites[i].args];
-        renderArgs();
-        updateCommand();
+        updateAll();
       }
     };
 
@@ -235,6 +365,12 @@
         favorites.splice(i, 1);
         renderFavorites();
       }
+    };
+
+    window.togglePin = i => {
+      if (!favorites[i]) return;
+      favorites[i].pinned = !favorites[i].pinned;
+      renderFavorites();
     };
 
     function renderProfiles() {
@@ -255,8 +391,7 @@
       const p = profiles[i];
       args = Array.isArray(p.args) ? p.args : [];
       applyTheme(p.theme || "theme-dark");
-      renderArgs();
-      updateCommand();
+      updateAll();
     };
 
     document.getElementById("exportProfiles").addEventListener("click", () => {
@@ -292,6 +427,8 @@
     btnThemeLight.addEventListener("click", () => applyTheme("theme-light"));
     btnThemeDark.addEventListener("click", () => applyTheme("theme-dark"));
     btnThemeSolar.addEventListener("click", () => applyTheme("theme-solarized"));
+    btnThemeCyber.addEventListener("click", () => applyTheme("theme-cyberpunk"));
+    btnThemeMinimal.addEventListener("click", () => applyTheme("theme-minimal"));
 
     document.getElementById("flagSearch").addEventListener("input", e => {
       const term = e.target.value.toLowerCase();
@@ -309,6 +446,20 @@
           toggle.textContent = content.classList.contains('hidden') ? '▸' : '▾';
         }
       });
+    });
+
+    document.addEventListener('keydown', e => {
+      if (e.ctrlKey && e.key === 'Enter') {
+        e.preventDefault();
+        const copyBtn = document.getElementById('copyBtn');
+        copyBtn.click();
+        copyBtn.classList.add('bg-blue-500');
+        copyBtn.classList.remove('bg-cyan-600');
+        setTimeout(() => {
+            copyBtn.classList.remove('bg-blue-500');
+            copyBtn.classList.add('bg-cyan-600');
+        }, 200);
+      }
     });
 
     renderProfiles();
