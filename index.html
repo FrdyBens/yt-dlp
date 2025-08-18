@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>yt-dlp Visual Builder Ultra</title>
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body class="theme-dark min-h-screen flex flex-col">
+    <header class="p-4 bg-secondary shadow-md flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-accent">🎬 yt-dlp Command Builder Ultra</h1>
+      <div class="flex gap-2 flex-wrap">
+        <button id="btnThemeLight" class="px-3 py-1 rounded bg-tertiary hover:bg-hover text-primary text-xs">🌞 Light</button>
+        <button id="btnThemeDark" class="px-3 py-1 rounded bg-tertiary hover:bg-hover text-primary text-xs">🌌 Dark</button>
+        <button id="btnThemeSolar" class="px-3 py-1 rounded bg-tertiary hover:bg-hover text-primary text-xs">🌅 Solarized</button>
+        <button id="btnThemeCyber" class="px-3 py-1 rounded bg-tertiary hover:bg-hover text-primary text-xs">🤖 Cyber</button>
+        <button id="btnThemeMinimal" class="px-3 py-1 rounded bg-tertiary hover:bg-hover text-primary text-xs">✨ Minimal</button>
+      </div>
+    </header>
+
+    <main class="flex-1 grid grid-cols-12 gap-4 p-6">
+      <aside class="col-span-3 bg-secondary p-4 rounded-2xl shadow-lg">
+        <h2 class="text-lg font-semibold mb-4">⚡ Components</h2>
+        <input id="flagSearch" type="text" placeholder="🔍 Search flags..." class="w-full p-2 mb-4 rounded-md bg-tertiary border border-secondary text-primary">
+        <div id="components" class="space-y-3">
+          <div class="category" data-cat="Formats">
+            <h3 class="text-sm font-bold text-secondary cursor-pointer flex justify-between items-center">
+              <span>Formats</span>
+              <span class="category-toggle text-accent">▾</span>
+            </h3>
+            <div class="category-content space-y-3 mt-2">
+              <div draggable="true" data-arg="-f bestaudio" class="draggable bg-tertiary hover:bg-hover p-3 rounded-xl" title="Select the best quality audio-only stream.">🎧 Best Audio</div>
+              <div draggable="true" data-arg="--merge-output-format mp4" class="draggable bg-tertiary hover:bg-hover p-3 rounded-xl" title="If a merge is required (e.g., for separate video and audio streams), output to an MP4 container.">📦 Merge MP4</div>
+            </div>
+          </div>
+          <div class="category" data-cat="Metadata">
+            <h3 class="text-sm font-bold text-secondary cursor-pointer flex justify-between items-center">
+              <span>Metadata</span>
+              <span class="category-toggle text-accent">▾</span>
+            </h3>
+            <div class="category-content space-y-3 mt-2">
+              <div draggable="true" data-arg="--write-info-json" class="draggable bg-tertiary hover:bg-hover p-3 rounded-xl" title="Write video metadata to a .info.json file.">📝 Save JSON</div>
+              <div draggable="true" data-arg="--embed-thumbnail" class="draggable bg-tertiary hover:bg-hover p-3 rounded-xl" title="Embed thumbnail in the audio file as cover art.">📌 Embed Thumbnail</div>
+            </div>
+          </div>
+        </div>
+
+        <h2 class="text-lg font-semibold mt-6 mb-4">🎶 Smart Presets</h2>
+        <div id="presets" class="space-y-3">
+          <div draggable="true" data-args="--bestaudio --extract-audio --audio-format mp3 --embed-thumbnail" class="draggable preset-1 p-3 rounded-xl text-white">🎧 Music Mode</div>
+          <div draggable="true" data-args="--write-info-json --embed-metadata --keep-video --cookies" class="draggable preset-2 p-3 rounded-xl text-white">📦 Archive Mode</div>
+          <div draggable="true" data-args="--merge-output-format mp4 --no-warnings --remux-video mp4" class="draggable preset-3 p-3 rounded-xl text-white">⚡ Fast Grab</div>
+        </div>
+      </aside>
+
+      <section class="col-span-6 bg-secondary p-6 rounded-2xl shadow-xl flex flex-col">
+        <h2 class="text-lg font-semibold mb-4">🛠️ Build Command</h2>
+        <textarea id="multiUrlInput" rows="4" placeholder="Paste multiple URLs here (one per line)..." class="w-full mb-4 p-2 rounded-md bg-tertiary border border-secondary text-primary"></textarea>
+        <input id="urlInput" type="text" placeholder="Or single URL here..." class="w-full mb-4 p-2 rounded-md bg-tertiary border border-secondary text-primary">
+        <div id="dropzone" class="flex-1 p-4 rounded-xl border-2 border-dashed border-color bg-tertiary text-secondary flex flex-col gap-2 overflow-y-auto">
+          Drag options here ⬇️
+        </div>
+      </section>
+
+      <aside class="col-span-3 bg-secondary p-4 rounded-2xl shadow-lg flex flex-col">
+        <h2 class="text-lg font-semibold mb-2">🚀 Command</h2>
+        <textarea id="commandOutput" rows="6" class="w-full bg-tertiary p-2 rounded-md text-green font-mono text-sm"></textarea>
+        <div class="grid grid-cols-2 gap-2 mt-3">
+          <button id="copyBtn" class="btn-primary text-white py-2 px-4 rounded-xl shadow w-full">📋 Copy</button>
+          <button id="exportScriptBtn" class="preset-2 text-white py-2 px-4 rounded-xl shadow w-full">📜 Export Script</button>
+        </div>
+        <button id="runPreview" class="mt-2 btn-danger text-white py-2 px-4 rounded-xl shadow w-full">▶ Fake Run</button>
+        <pre id="executionLog" class="mt-2 p-2 bg-primary text-green text-xs h-32 overflow-y-auto hidden"></pre>
+        <button id="saveProfile" class="mt-3 btn-secondary text-white py-2 px-4 rounded-xl shadow">💾 Save Profile</button>
+        <button id="saveFavoriteBtn" class="mt-2 btn-special text-white py-2 px-4 rounded-xl shadow">⭐ Save as Favorite</button>
+        <button id="exportProfiles" class="mt-2 btn-primary text-white py-2 px-4 rounded-xl shadow">📤 Export Profiles</button>
+        <input type="file" id="importProfiles" class="hidden">
+        <button id="btnImportProfiles" class="mt-2 btn-primary text-white py-2 px-4 rounded-xl shadow">📥 Import Profiles</button>
+        <div class="mt-4">
+          <h3 class="text-sm text-secondary mb-1">⭐ Favorites</h3>
+          <ul id="favoritesList" class="text-xs space-y-1"></ul>
+        </div>
+        <div class="mt-4">
+          <h3 class="text-sm text-secondary mb-1">Saved Profiles</h3>
+          <ul id="profilesList" class="text-xs space-y-1"></ul>
+        </div>
+      </aside>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
